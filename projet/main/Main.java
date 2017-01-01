@@ -14,8 +14,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import critere.Empreinte;
 import recherche.HillClimber;
 
 
@@ -29,21 +27,49 @@ public class Main {
     public static int numberOfPhoto = 55;
     public static String photoFileName;
     public static String albumFileName;
+    public static String solutionFileName;
+    public static int algo;
     
 
+    /**
+     * Liste des Algorithmes
+     * 1 = Hill Climber First Improvement
+     */
+    
+    /**
+     * Liste des Criteres de tri
+     * 1 = Empreinte (ahashdist)
+     */
+    
+    
     
     /**
      * @param args
-     * 1 = critere
-     * 2 = Nombre d'itertions
-     * 3 = Nombre d'evaluations
+     * 1 = Algorithme (cf. Liste des Algorithmes)
+     * 2 = Critere(cf. List des Criteres de tri)
+     * 3 = Nombre d'itertions
+     * 4 = Nombre d'evaluations
      */
+    
     public static void main(String[] args)  { 
 	// Path to the photo information file in json format
 	setPhotoFileName("/Users/florian/prj1-ro/data/info-photo.json");
 	// Path to the album information file in json format
 	setAlbumFileName("/Users/florian/prj1-ro/data/info-album.json");
-	HillClimber.run(1, 1000, 10000);
+	
+	setSolutionFileName("/Users/florian/prj1-ro/data/chronologic-order.sol");
+	
+	
+	int algorithme = 2;
+	int critere = 1;
+	int nbRun = 10;
+	int nbEval = 1000;
+	
+	setAlgo(algorithme);
+	
+	double result = Algorithmes.Launch(algo, critere, nbRun, nbEval);
+	System.out.println("Resultat : "+result);
+	
 	
     }
 
@@ -134,4 +160,22 @@ public class Main {
 		Main.numberOfPhoto = numberOfPhoto;
 	}
 
+	
+	public static String getSolutionFileName() {
+		return solutionFileName;
+	}
+
+	public static void setSolutionFileName(String solutionFileName) {
+		Main.solutionFileName = solutionFileName;
+	}
+
+	public static int getAlgo() {
+		return algo;
+	}
+
+
+	public static void setAlgo(int algo) {
+		Main.algo = algo;
+	}
+	
 }

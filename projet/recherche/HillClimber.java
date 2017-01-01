@@ -2,7 +2,9 @@ package recherche;
 
 import main.Main;
 import main.Parametrage;
+import main.File;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,11 +12,13 @@ import java.util.Random;
 
 public class HillClimber {
 	
+	public static int[] solutionFinale;
+	public static int[] externalSolution;
 	
 	 private static int random(int max){
 	    	Random r = new Random();
 	    	return r.nextInt(max);
-	    }
+	 }
 	
 	 public static int[] Voisin(int [] solution){
     	
@@ -52,12 +56,26 @@ public class HillClimber {
 	    }
 	    
 	
+	 
+	 
+	 public static int[] getFirstSolution(){
+		 
+		 int [] solution = new int[Main.getNumberOfPhoto()];
+		 
+		 for(int i = 0; i < 55; i++){
+			    solution[i] = i;
+			}
+		 
+		return solution = Shuffle(solution);
+		 
+	 }
 	
 	
-	public static void run(int critere, int nbRun, int nbEvalMax){
+	 public static double run(int critere, int nbRun, int nbEvalMax){
 		
 		//int nbRun = 1000;
 		double sBestTotal = 0;
+		int [] bestSolution = new int[Main.getNumberOfPhoto()];
 		
 		
 		for (int nb = 0; nb<nbRun; nb++){
@@ -78,19 +96,19 @@ public class HillClimber {
 			// one basic solution : order of the index
 		
 			
-			int [] solution = new int[Main.getNumberOfPhoto()];
-			int [] solutionVoisine = new int[Main.getNumberOfPhoto()];
 			
-			int [] bestSolution = new int[Main.getNumberOfPhoto()];
+			
+			int [] solutionVoisine = new int[Main.getNumberOfPhoto()];
+			int [] solution = new int[Main.getNumberOfPhoto()];
 		
-			for(int i = 0; i < 55; i++){
-			    solution[i] = i;
+			
+			
+			if(getExternalSolution() == null){
+				solution = getFirstSolution();
+			}else{
+				solution = getExternalSolution();
 			}
 			
-			
-		
-			// compute the fitness
-			solution = Shuffle(solution);
 			sBest = Parametrage.Eval(critere, solution);
 			if (sBestTotal == 0){
 				sBestTotal = sBest;
@@ -126,6 +144,35 @@ public class HillClimber {
 			
 			}
 		System.out.println("Meilleur : "+sBestTotal);
+		setSolutionFinale(bestSolution);
+		if(Main.getAlgo() == 1){
+			try {
+				File.write(bestSolution);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return sBestTotal;
 	}
+
+	public static int[] getSolutionFinale() {
+		return solutionFinale;
+	}
+
+	public static void setSolutionFinale(int[] solution) {
+		solutionFinale = solution;
+	}
+
+	public static int[] getExternalSolution() {
+		return externalSolution;
+	}
+
+	public static void setExternalSolution(int[] externalSolution) {
+		HillClimber.externalSolution = externalSolution;
+	}
+	
+	
+	
 	
 }
