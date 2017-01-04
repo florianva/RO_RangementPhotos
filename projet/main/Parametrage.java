@@ -1,5 +1,5 @@
 package main;
-import critere.Empreinte;
+import critere.*;
 
 public class Parametrage {
 
@@ -7,6 +7,8 @@ public class Parametrage {
 		switch (arg) {
         case 1:  Empreinte.Start();
                  break;
+        case 2:  Tags.Start();
+        		 break;
         default: Empreinte.Start();
                  break;
     }
@@ -16,6 +18,7 @@ public class Parametrage {
 	public static double Eval(int arg, int [] solution){
 		switch (arg) {
         case 1:  return Empreinte.eval(solution);
+        case 2:  return Tags.eval(solution);
         default: return Empreinte.eval(solution);
     }
 	}

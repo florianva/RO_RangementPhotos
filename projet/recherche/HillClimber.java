@@ -62,7 +62,7 @@ public class HillClimber {
 		 
 		 int [] solution = new int[Main.getNumberOfPhoto()];
 		 
-		 for(int i = 0; i < 55; i++){
+		 for(int i = 0; i < 54; i++){//TEST
 			    solution[i] = i;
 			}
 		 
@@ -79,6 +79,7 @@ public class HillClimber {
 		
 		
 		for (int nb = 0; nb<nbRun; nb++){
+			
 			
 		
 			int nbEval = 0;
@@ -133,7 +134,8 @@ public class HillClimber {
 					sBest = s;
 					solution = solutionVoisine;
 				}
-				System.out.println("best : "+sBest);
+				if(Main.getAlgo() == 1)
+					System.out.println("best : "+sBest);
 				
 				//AfficheSolution(solution);
 			}
@@ -141,9 +143,10 @@ public class HillClimber {
 				sBestTotal = sBest;
 				bestSolution = solution;
 			}
-			
-			}
-		System.out.println("Meilleur : "+sBestTotal);
+			if(Main.getAlgo() == 1)
+				System.out.println("Run "+(nb+1)+" Meilleur : "+sBestTotal);
+		}
+		
 		setSolutionFinale(bestSolution);
 		if(Main.getAlgo() == 1){
 			try {

@@ -38,15 +38,23 @@ public class IteratedLocalSearch {
 				
 				if (s < sBest){
 					sBest = s;
-					solution = newSolution;
+					for (int i=0; i<newSolution.length; i++)
+						solution[i] = newSolution[i];
+					if(Main.getAlgo() == 2)
+						System.out.println("best : "+sBest);
+					
 				}
+				
 				
 				
 			}
 			if (sBest < sBestTotal || sBestTotal == 0){
 				sBestTotal = sBest;
-				bestSolution = solution;
+				for (int i=0; i<solution.length; i++)
+					bestSolution[i] = solution[i];
 			}
+			if(Main.getAlgo() == 2)
+				System.out.println("Run "+(nb+1)+" Meilleur : "+sBestTotal);
 		}
 		if(Main.getAlgo() == 2){
 			try {
@@ -62,10 +70,9 @@ public class IteratedLocalSearch {
 	
 	public static int[] perturbation(int[] solution, double pourcentage){
 		int[] newSolution = new int[solution.length];
-		for (int i=0; i<solution.length; i++){
+		for (int i=0; i<solution.length; i++)
 			newSolution[i] = solution[i];
-		}
-		newSolution = solution;
+		
 		for(int i=0; i< (solution.length*pourcentage); i++){
 			
 			int indice1 = random(Main.getNumberOfPhoto());
@@ -77,9 +84,11 @@ public class IteratedLocalSearch {
 	    	newSolution[indice1] = photo2;
 	    	newSolution[indice2] = photo1;
 	    	
-	    	solution = newSolution;
+	    	for(int j=0; j<newSolution.length; j++)
+	    		solution[j] = newSolution[j];
+	  
 		}
-		return newSolution;
+		return solution;
 	}
 	
 	 private static int random(int max){

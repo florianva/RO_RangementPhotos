@@ -13,10 +13,11 @@ import main.Distances;
 import main.Main;
 import recherche.HillClimber;
 
-public class Empreinte {
+public class Tags {
 
 	// Distance between photos
     public static double [][] photoDist;
+    public static long [] photoGrey;
 
     
     public static void Start() {
@@ -38,15 +39,20 @@ public class Empreinte {
 			    JSONArray array = (JSONArray) obj;
 
 			    photoDist = new double[array.size()][array.size()];
+			    photoGrey = new long[array.size()];
 
 			    // distance based on the distance between average hash
 			    for(int i = 0; i < array.size(); i++) {
 				JSONObject image = (JSONObject) array.get(i);
-				JSONArray d = (JSONArray) image.get("ahashdist");		
+				photoGrey[i] = (long) image.get("greyavg");
+				JSONArray d = (JSONArray) image.get("dhashdist");
+				//System.out.println(photoGrey[i]);
 				for(int j = 0; j < d.size(); j++) {
 				    photoDist[i][j] = (double) d.get(j);
 				}
+						
 			    }
+			    
 
 			    /*
 			    for(int i = 0; i < photoDist.length; i++) {
@@ -87,7 +93,7 @@ public class Empreinte {
 
 	for(int i = 0; i < Distances.getAlbumInvDist().length; i++) {
 	    for(int j = i + 1; j < Distances.getAlbumInvDist().length; j++) {
-		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] ;
+		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] * photoGrey[i] ;
 	    }
 	}
 
