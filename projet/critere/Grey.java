@@ -3,6 +3,12 @@ package critere;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,10 +18,14 @@ import org.json.simple.parser.ParseException;
 import main.Main;
 import recherche.HillClimber;
 
-public class Empreinte {
+public class Grey {
 
 	// Distance between photos
     public static double [][] photoDist;
+    public static long [] photoGrey;
+    public static String[][] topTags;
+    public static double[][] topProbs;
+    public static double[] classement;
 
     
     public static void Start(String empreinte) {
@@ -37,16 +47,18 @@ public class Empreinte {
 			    JSONArray array = (JSONArray) obj;
 
 			    photoDist = new double[array.size()][array.size()];
+			    photoGrey = new long[array.size()];
 
 			    // distance based on the distance between average hash
 			    for(int i = 0; i < array.size(); i++) {
 				JSONObject image = (JSONObject) array.get(i);
-				JSONArray d = (JSONArray) image.get(empreinte);		
+				photoGrey[i] = (long) image.get("greyavg");
+				JSONArray d = (JSONArray) image.get(empreinte);
 				for(int j = 0; j < d.size(); j++) {
 				    photoDist[i][j] = (double) d.get(j);
 				}
+						
 			    }
-
 
 
 			} catch(ParseException pe) {	    
@@ -78,12 +90,13 @@ public class Empreinte {
 
 	for(int i = 0; i < Distances.getAlbumInvDist().length; i++) {
 	    for(int j = i + 1; j < Distances.getAlbumInvDist().length; j++) {
-		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] ;
+		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] * photoGrey[i];
 	    }
 	}
 
 	return sum;
     }
+    
     
 	
 	

@@ -1,6 +1,8 @@
-package main;
+package tools;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+
+import main.Main;
 
 
 public class File {

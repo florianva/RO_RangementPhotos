@@ -1,4 +1,4 @@
-package main;
+package critere;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,14 +14,6 @@ public class Distances {
 	
     // Inverse of the distance between positions in the album
     public static double [][] albumInvDist;
-	
-	
-
-	
-
-
-
-
 
 
 	public static void computeAlbumDistances(String fileName) {
@@ -54,14 +46,6 @@ public class Distances {
 			    albumInvDist[i][j] = inverseDistance(size, i, j);
 		    	setAlbumInvDist(albumInvDist);
 		    
-		    /*
-		    for(int i = 0; i < albumDist.length; i++) {
-			for(int j = 0; j < albumDist.length; j++) {
-			    System.out.print(" " + albumDist[i][j]);
-			}
-			System.out.println();
-		    }
-		    */
 
 		} catch(ParseException pe) {	    
 		    System.out.println("position: " + pe.getPosition());

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
@@ -22,6 +23,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import parametrage.Algorithmes;
 import recherche.HillClimber;
 
 
@@ -38,18 +41,21 @@ public class Main {
     public static String solutionFileName;
     public static int algo;
     
-    public static String[][] topTags;
+   
     
 
     /**
      * Liste des Algorithmes
      * 1 = Hill Climber First Improvement
+     * 2 = Iterated Local Search
      */
     
     /**
      * Liste des Criteres de tri
      * 1 = Empreinte (ahashdist)
-     * 2 = Tags
+     * 2 = Empreinte + Nuances de gris
+     * 3 = Empreinte + Tags
+     * 4 = Empreinte + Nuances de gris + Tags
      */
     
     
@@ -57,188 +63,57 @@ public class Main {
     /**
      * @param args
      * 1 = Algorithme (cf. Liste des Algorithmes)
-     * 2 = Critere(cf. List des Criteres de tri)
+     * 2 = Critere(cf. Liste des Criteres de tri)
      * 3 = Nombre d'itertions
      * 4 = Nombre d'evaluations
+     * 5 = Choix de l'empreinte pour la distance ( dhashdist, ahashdist ou phashdist ) :
      */
     
     public static void main(String[] args)  { 
+    	
+    Properties prop = new Properties();
+    InputStream input = null;
+    
+    try {
+		input = new FileInputStream("config.properties");
+		prop.load(input);
+    
+    } catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+    	
+    	
 	// Path to the photo information file in json format
-	setPhotoFileName("/Users/florian/prj1-ro/data/info-photo.json");
+	setPhotoFileName(prop.getProperty("photoFileName"));
 	// Path to the album information file in json format
-	setAlbumFileName("/Users/florian/prj1-ro/data/info-album.json");
+	setAlbumFileName(prop.getProperty("albumFileName"));
 	
-	setSolutionFileName("/Users/florian/prj1-ro/data/chronologic-order.sol");
+	setSolutionFileName(prop.getProperty("solutionFileName"));
 	
 	
-	int algorithme = 1;
+	/*int algorithme = 2;
 	int critere = 2;
-	int nbRun = 1000;
-	int nbEval = 100000;
+	int nbRun = 5;
+	int nbEval = 10000;
+	String empreinte = "ahashdist";*/
+	int algorithme = Integer.parseInt(prop.getProperty("algorithme"));
+	int critere = Integer.parseInt(prop.getProperty("critere"));
+	int nbRun = Integer.parseInt(prop.getProperty("nbRun"));
+	int nbEval = Integer.parseInt(prop.getProperty("nbEval"));
+	String empreinte = prop.getProperty("empreinte");
 	
 	setAlgo(algorithme);
-	Map<String,Integer> map = new HashMap<String,Integer>();
 	
 	
 	
-	//double result = Algorithmes.Launch(algo, critere, nbRun, nbEval);
-	//System.out.println("Resultat : "+result);
-	
-	try{
-		FileReader reader = new FileReader(getPhotoFileName());
-	
-	    JSONParser parser = new JSONParser();
-	
-	    Object obj = parser.parse(reader);
-	
-	    JSONArray array = (JSONArray) obj;
-	    
-	    topTags = new String[array.size()][array.size()];
-	
-	    // distance based on the distance between average hash
-	    for(int i = 0; i < array.size(); i++) {
-		JSONObject image = (JSONObject) array.get(i);
-		JSONObject tags = (JSONObject) image.get("tags");
-		JSONArray d = (JSONArray) tags.get("classes");
-		
-		for(int j = 0; j < 3; j++) {
-			topTags[i][j] = (String) d.get(j);
-		}
-		
-		
-		for (int k = 0; k < 3; k++) {
-		    String word=topTags[i][k];
-		    if (!map.containsKey(word)){
-		        map.put(word,1);
-		    } else {
-		    	if(word.equals("nobody")){
-		    		map.put(word,0);
-		    	}else{
-		    		map.put(word, map.get(word) +1);
-		    	}
-		    }
-		}
-			
-		
-	    }
-	    int maxValueInMap=(Collections.max(map.values()));
-		for (Entry<String, Integer> entry : map.entrySet()) {  // Itrate through hashmap
-            if (entry.getValue()==maxValueInMap) {
-                System.out.println(entry.getKey());     // Print the key with max value
-            }
-        }
-		int max = 0;
-		int max2 = 0;
-		int max3 = 0;
-		int nb = 0;
-		int indiceMax = 0;
-		int indiceMax2 = 0;
-		int indiceMax3 = 0;
-		List<Integer> valueList = new ArrayList<Integer>(map.values());
-		System.out.println("\n==> Size of Value list: " + valueList.size());
-		for (Integer temp : valueList) {
-			//System.out.println(temp);
-			 if (temp > max){
-				 max3 = max2;
-				 max2 = max;
-				 max = temp;
-				 indiceMax = nb;
-			 }else{
-				 if(temp > max2){
-					 max3 = max2;
-					 max2 = temp;
-					 indiceMax2 = nb;
-				 }else{
-					 if(temp > max3){
-						 max3 = temp;
-						 indiceMax3 = nb;
-					 }
-				 }
-			 }
-			 nb++;
-		}
-		System.out.println(map);
-		System.out.println(max);
-		System.out.println(max2);
-		System.out.println(max3);
-		
-		List keys = new ArrayList(map.keySet());
-		Object tag1 = keys.get(indiceMax);
-		Object tag2 = keys.get(indiceMax2);
-		Object tag3 = keys.get(indiceMax3);
-		System.out.println(tag1.toString());
-		System.out.println(tag2.toString());
-		System.out.println(tag3.toString());
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	    
-		
-	} catch(ParseException pe) {	    
-	    System.out.println("position: " + pe.getPosition());
-	    System.out.println(pe);
-	} catch (FileNotFoundException ex) {
-	    ex.printStackTrace();
-	} catch(IOException ex) {
-	    ex.printStackTrace();
-	}
-	
-    }
-
-    
-
-
-
-
-	/**
-     *
-     * Example of json file parsing
-     *
-     * see: https://code.google.com/p/json-simple/
-     * for more example to decode json under java
-     *
-     */
-    
-	
+	double result = Algorithmes.Launch(algorithme, critere, nbRun, nbEval, empreinte);
+	System.out.println("Resultat : "+result);
   
-    
-    public static void readPhotoExample(String fileName) {
-	try {
-	    FileReader reader = new FileReader(fileName);
-
-	    JSONParser parser = new JSONParser();
-	    
-	    // parser the json file
-	    Object obj = parser.parse(reader);
-	    //System.out.println(obj);
-
-	    // extract the array of image information
-	    JSONArray array = (JSONArray) obj;
-	    System.out.println("The first element:\n" + array.get(0));
-
-	    JSONObject obj2 = (JSONObject) array.get(0);
-	    System.out.println("the id of the first element is: " + obj2.get("id"));    
-
-	    JSONArray arraytag = (JSONArray) ((JSONObject)obj2.get("tags")).get("classes");
-	    System.out.println("Tag list of the first element:");
-	    for(int i = 0; i < arraytag.size(); i++)
-		System.out.print(" " + arraytag.get(i));
-	    System.out.println();
-
-	} catch(ParseException pe) {	    
-	    System.out.println("position: " + pe.getPosition());
-	    System.out.println(pe);
-	} catch (FileNotFoundException ex) {
-	    ex.printStackTrace();
-	} catch(IOException ex) {
-	    ex.printStackTrace();
-	}
     }
 
     

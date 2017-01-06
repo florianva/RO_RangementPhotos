@@ -3,15 +3,15 @@ package recherche;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-import main.Algorithmes;
-import main.File;
 import main.Main;
+import parametrage.Algorithmes;
+import tools.File;
 
 public class IteratedLocalSearch {
 
 	
 	
-	public static double run(int critere, int nbRun, int nbEvalMax){
+	public static double run(int critere, int nbRun, int nbEvalMax, String empreinte){
 	
 		int searchAlgo = 1;
 		int searchNbRun = 1;
@@ -26,14 +26,14 @@ public class IteratedLocalSearch {
 			double s = 0;
 			
 		
-			sBest = Algorithmes.Launch(searchAlgo, critere, searchNbRun, searchNbEval);
+			sBest = Algorithmes.Launch(searchAlgo, critere, searchNbRun, searchNbEval, empreinte);
 			int solution[] = Algorithmes.getSolution(searchAlgo);
 			nbEval++;
 			
 			while(nbEval <= nbEvalMax){
 				newSolution = perturbation(solution, 0.25);
 				HillClimber.setExternalSolution(newSolution);
-				s = Algorithmes.Launch(searchAlgo, critere, searchNbRun, searchNbEval);
+				s = Algorithmes.Launch(searchAlgo, critere, searchNbRun, searchNbEval, empreinte);
 				nbEval ++;
 				
 				if (s < sBest){

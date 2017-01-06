@@ -1,8 +1,8 @@
 package recherche;
 
 import main.Main;
-import main.Parametrage;
-import main.File;
+import parametrage.Critere;
+import tools.File;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class HillClimber {
 		 
 		 int [] solution = new int[Main.getNumberOfPhoto()];
 		 
-		 for(int i = 0; i < 54; i++){//TEST
+		 for(int i = 0; i < 54; i++){
 			    solution[i] = i;
 			}
 		 
@@ -71,9 +71,8 @@ public class HillClimber {
 	 }
 	
 	
-	 public static double run(int critere, int nbRun, int nbEvalMax){
+	 public static double run(int critere, int nbRun, int nbEvalMax, String empreinte){
 		
-		//int nbRun = 1000;
 		double sBestTotal = 0;
 		int [] bestSolution = new int[Main.getNumberOfPhoto()];
 		
@@ -83,7 +82,6 @@ public class HillClimber {
 			
 		
 			int nbEval = 0;
-			//int nbEvalMax = 10000;
 			double sBest = 0;
 			double s = 0;
 			
@@ -91,10 +89,8 @@ public class HillClimber {
 			// uncomment to test it
 			// readPhotoExample(photoFileName);
 		
-			//computeDistances(photoFileName, albumFileName);
-			Parametrage.Start(critere);
+			Critere.Start(critere, empreinte);
 		
-			// one basic solution : order of the index
 		
 			
 			
@@ -110,24 +106,21 @@ public class HillClimber {
 				solution = getExternalSolution();
 			}
 			
-			sBest = Parametrage.Eval(critere, solution);
+			sBest = Critere.Eval(critere, solution);
 			if (sBestTotal == 0){
 				sBestTotal = sBest;
 			}
 			
-			//System.out.println(sBest);
 			nbEval ++;
 			
 			while(nbEval <= nbEvalMax){
 				solutionVoisine = Voisin(solution);
-				s = Parametrage.Eval(critere, solutionVoisine);
-				//System.out.println(s);
+				s = Critere.Eval(critere, solutionVoisine);
 				nbEval ++;
 			
 				while(sBest <= s && nbEval <= nbEvalMax){
 					solutionVoisine = Voisin(solution);
-					s = Parametrage.Eval(critere, solutionVoisine);
-					//System.out.println(s);
+					s = Critere.Eval(critere, solutionVoisine);
 					nbEval ++;
 				}
 				if(s < sBest){
@@ -136,8 +129,6 @@ public class HillClimber {
 				}
 				if(Main.getAlgo() == 1)
 					System.out.println("best : "+sBest);
-				
-				//AfficheSolution(solution);
 			}
 			if (sBest < sBestTotal){
 				sBestTotal = sBest;

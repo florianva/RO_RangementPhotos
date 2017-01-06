@@ -8,17 +8,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import main.Main;
+import recherche.HillClimber;
 
-public class Tags {
+public class Grey_tags {
 
 	// Distance between photos
     public static double [][] photoDist;
+    public static long [] photoGrey;
     public static String[][] topTags;
     public static double[][] topProbs;
     public static double[] classement;
@@ -44,11 +48,14 @@ public class Tags {
 			    JSONArray array = (JSONArray) obj;
 
 			    photoDist = new double[array.size()][array.size()];
+			    photoGrey = new long[array.size()];
 
-			    // distance based on the distance between hash
+			    // distance based on the distance between average hash
 			    for(int i = 0; i < array.size(); i++) {
 				JSONObject image = (JSONObject) array.get(i);
+				photoGrey[i] = (long) image.get("greyavg");
 				JSONArray d = (JSONArray) image.get(empreinte);
+				//System.out.println(photoGrey[i]);
 				for(int j = 0; j < d.size(); j++) {
 				    photoDist[i][j] = (double) d.get(j);
 				}
@@ -72,16 +79,14 @@ public class Tags {
 	
 	
 	/**
-     *   evaluation en fonction du hash et du classement des photos par tag 
-     *      
+     * evaluation en fonction du hash, de la nuance de gris et du classement des photos par tag 
      */
-	 
     public static double eval(int [] solution) {
 	double sum = 0;
 
 	for(int i = 0; i < Distances.getAlbumInvDist().length; i++) {
 	    for(int j = i + 1; j < Distances.getAlbumInvDist().length; j++) {
-		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] * (1-getClassement()[i]);
+		sum += photoDist[ solution[i] ][ solution[j] ] * Distances.getAlbumInvDist()[i][j] * photoGrey[i] * (1-getClassement()[i]);
 	    }
 	}
 
@@ -222,7 +227,7 @@ public class Tags {
 
 
 	public static void setClassement(double[] classement) {
-		Tags.classement = classement;
+		Grey_tags.classement = classement;
 	}
 
  
